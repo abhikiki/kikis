@@ -18,7 +18,11 @@ package com.abhishek.fmanage.mortgage.data.bean;
  */
 public class Customer extends AbstractPerson
 {
-    // Rating of the customer
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// Rating of the customer
     private int rating;
 
     /**

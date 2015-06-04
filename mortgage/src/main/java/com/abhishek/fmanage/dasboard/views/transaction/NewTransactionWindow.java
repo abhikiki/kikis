@@ -49,8 +49,6 @@ public class NewTransactionWindow extends Window
      */
     private static final long serialVersionUID = 1L;
     private static final String TOOLTIP = "Add Item";
-    private static final ThemeResource ADD_BTN_ICON = new ThemeResource(
-            "img/addButtonSmall.jpg");
     private PopupDateField transactionDate = new PopupDateField();
     private DecimalTextField interestRate = new DecimalTextField("Interest Rate(%)");
     private DecimalTextField amountLended = new DecimalTextField("Amount Lended(INR)");
@@ -206,7 +204,12 @@ public class NewTransactionWindow extends Window
         final CheckBox switchEditable = new CheckBox("Editable");
         switchEditable.addValueChangeListener(
                 new Property.ValueChangeListener() {
-            public void valueChange(ValueChangeEvent event) {
+            /**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
+			public void valueChange(ValueChangeEvent event) {
                 itemTable.setEditable(((Boolean)event.getProperty()
                                      .getValue()).booleanValue());
                 itemTable.setImmediate(true);
@@ -234,7 +237,12 @@ public class NewTransactionWindow extends Window
         image.addClickListener(new MouseEvents.ClickListener()
         {
             
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void click(com.vaadin.event.MouseEvents.ClickEvent event)
             {
                 mItemViewContainer.addMortgageItem(totalWeightCheckBox.getValue(),"","0.0","");
@@ -339,7 +347,6 @@ public class NewTransactionWindow extends Window
     private void populateComponentData(MortgageTransaction mTrans, MortgageItemViewContainer mItemViewContainer)
     {
         BeanFieldGroup<Customer> binder = (BeanFieldGroup<Customer>) layout.getData();
-        BeanItem<Customer> cus = binder.getItemDataSource();
         binder.setItemDataSource(mTrans.getCustomer());
        
         transactionDate.setValue(new Date(989));

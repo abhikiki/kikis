@@ -175,10 +175,6 @@ public class MortgageTransactionView extends VerticalLayout implements View
 
             private Action transactionDetailAction = new Action("Transaction Details");
 
-            private Action discard = new Action("Discard");
-
-            private Action details = new Action("Movie details");
-
             @Override
             public void handleAction(Action action, Object sender, Object target)
             {
