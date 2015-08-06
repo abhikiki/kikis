@@ -15,9 +15,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import com.abhishek.fmanage.dasboard.views.transaction.MortgageTransactionView;
-import com.abhishek.fmanage.dashboard.data.DataProvider;
-import com.abhishek.fmanage.dashboard.data.Generator;
-import com.abhishek.fmanage.dashboard.data.MyConverterFactory;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -60,8 +57,6 @@ import com.vaadin.ui.VerticalLayout;
 @Title("Finance Management Dashboard")
 public class DashboardUI extends UI {
 
-    DataProvider dataProvider = new DataProvider();
-
     private static final long serialVersionUID = 1L;
 
     CssLayout root = new CssLayout();
@@ -75,9 +70,6 @@ public class DashboardUI extends UI {
         {
             put("/dashboard", DashboardView.class);
             put("/transactions", MortgageTransactionView.class);
-        //    put("/transactions", TransactionsView.class);
-            put("/analytics", ReportsView.class);
-            put("/inventory", ScheduleView.class);
         }
     };
 
@@ -89,7 +81,7 @@ public class DashboardUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        getSession().setConverterFactory(new MyConverterFactory());
+        //getSession().setConverterFactory(new MyConverterFactory());
 
         helpManager = new HelpManager(this);
 
@@ -266,10 +258,7 @@ public class DashboardUI extends UI {
                                         new ThemeResource("img/profile-pic.png"));
                                 profilePic.setWidth("34px");
                                 addComponent(profilePic);
-                                Label userName = new Label(Generator
-                                        .randomFirstName()
-                                        + " "
-                                        + Generator.randomLastName());
+                                Label userName = new Label("Abhishek Gupta");
                                 userName.setSizeUndefined();
                                 addComponent(userName);
 
@@ -396,10 +385,6 @@ public class DashboardUI extends UI {
             public void afterViewChange(ViewChangeEvent event) {
                 View newView = event.getNewView();
                 helpManager.showHelpFor(newView);
-                if (autoCreateReport && newView instanceof ReportsView) {
-                    ((ReportsView) newView).autoCreate(2, items, transactions);
-                }
-                autoCreateReport = false;
             }
         });
 

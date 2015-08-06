@@ -16,7 +16,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.ThemeResource;
@@ -43,10 +42,6 @@ import com.vaadin.ui.Window;
  */
 public class NewTransactionWindow extends Window
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private static final String TOOLTIP = "Add Item";
     private PopupDateField transactionDate = new PopupDateField();

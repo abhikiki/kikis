@@ -31,4 +31,7 @@
     <inherits name="com.vaadin.addon.timeline.gwt.TimelineWidgetSet" />
 
     <inherits name="com.avathartech.fastformfields.widgets.FastformfieldsWidgetset" />
+   
+
+    <inherits name="org.vaadin.teemu.ratingstars.gwt.RatingStarsWidgetset" />
 </module>

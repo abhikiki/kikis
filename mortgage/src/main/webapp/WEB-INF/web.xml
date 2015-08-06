@@ -22,7 +22,7 @@
 		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
 			<param-name>UI</param-name>
-			<param-value>com.abhishek.fmanage.dashboard.DashboardUI</param-value>
+			<param-value>com.abhishek.fmanage.dashboard.MatterUI</param-value>
 		</init-param>
 		<init-param>
 			<param-name>widgetset</param-name>

@@ -22,9 +22,6 @@ public class MortgageCustomerPayment
     // Amount paid by the customer
     private double amountPaid;
 
-    // Amount paid by the customer in words
-    private String amountPaidInWords;
-
     // Date on which the customer paid
     private Date paymentDate;
 
@@ -66,25 +63,5 @@ public class MortgageCustomerPayment
     public void setPaymentDate(final Date paymentDate)
     {
         this.paymentDate = paymentDate;
-    }
-
-    /**
-     * Get the amount paid by customer in words
-     * 
-     * @return amount paid by customer in words
-     */
-    public String getAmountPaidInWords()
-    {
-        return amountPaidInWords;
-    }
-
-    /**
-     * Set the amount paid by customer in words
-     * 
-     * @param amountPaidInWords amount paid by customer in words
-     */
-    public void setAmountPaidInWords(final String amountPaidInWords)
-    {
-        this.amountPaidInWords = amountPaidInWords;
     }
 }

@@ -156,7 +156,7 @@ public class MortgageTransactionView extends VerticalLayout implements View
             @Override
             public void buttonClick(ClickEvent event)
             {
-                Window w = new NewTransactionWindow(new MortgageTransaction(), true);
+                Window w = new ExistingTransactionWindow(new MortgageTransaction(), true);
                 UI.getCurrent().addWindow(w);
                 w.focus();
             }
@@ -183,7 +183,7 @@ public class MortgageTransactionView extends VerticalLayout implements View
                     Item item = ((Table) sender).getItem(target);
                     MortgageTransaction mTrans = (MortgageTransaction) item.getItemProperty(
                         MortgageTransactionViewContainer.MORTGAGE_TRANSACTION).getValue();
-                    Window w = new NewTransactionWindow(mTrans, false);
+                    Window w = new ExistingTransactionWindow(mTrans, false);
                     UI.getCurrent().addWindow(w);
                     w.focus();
                     //createNewReportFromSelection();

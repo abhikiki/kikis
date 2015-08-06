@@ -6,7 +6,7 @@ package com.abhishek.fmanage.mortgage.data.container;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.abhishek.fmanage.dasboard.views.transaction.NewTransactionWindow;
+import com.abhishek.fmanage.dasboard.views.transaction.ExistingTransactionWindow;
 import com.abhishek.fmanage.mortgage.data.bean.Customer;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageItem;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageTransaction;
@@ -115,7 +115,7 @@ public class MortgageTransactionViewContainer extends IndexedContainer
 //                Window w = new MovieDetailsWindow(DataProvider.getMovieForTitle(item
 //                    .getItemProperty("Title").getValue().toString()), null);
                 MortgageTransaction mTrans = (MortgageTransaction) event.getButton().getData();
-                Window w = new NewTransactionWindow(mTrans, false);
+                Window w = new ExistingTransactionWindow(mTrans, false);
                 w.center();
                 w.setModal(true);
                 UI.getCurrent().addWindow(w);
