@@ -37,7 +37,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 /**
- * @author Abhishek
+ * This class represent new transaction window
+ * 
+ * @author Abhishek Gupta
  *
  */
 public class NewTransactionWindow extends Window
@@ -49,9 +51,8 @@ public class NewTransactionWindow extends Window
     private DecimalTextField amountLended = new DecimalTextField("Amount Lended(INR)");
     private DecimalTextField totalWeight = new DecimalTextField("Total Weight");
     private Table itemTable = new Table();
-    final FormLayout layout = new FormLayout();
- // A check box with default state (not checked, false).
-    final CheckBox totalWeightCheckBox = new CheckBox("By Total Weight");
+    private final FormLayout layout = new FormLayout();
+    private final CheckBox totalWeightCheckBox = new CheckBox("By Total Weight");
 
     public NewTransactionWindow(MortgageTransaction mTrans, boolean isNew)
     {
@@ -61,13 +62,11 @@ public class NewTransactionWindow extends Window
         setResizable(false);
         setWidth("90%");
         setHeight("90%");
-//        setSizeFull();
         setClosable(false);
         addStyleName("no-vertical-drag-hints");
         addStyleName("no-horizontal-drag-hints");
         setModal(true);
 
-        // Transaction date
         transactionDate.setCaption("Transaction Date");
         transactionDate.setImmediate(true);
         transactionDate.setInvalidAllowed(false);
@@ -98,9 +97,6 @@ public class NewTransactionWindow extends Window
         ok.addStyleName("wide");
         ok.addStyleName("default");
         ok.addClickListener(new ClickListener() {
-            /**
-             * 
-             */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -110,7 +106,7 @@ public class NewTransactionWindow extends Window
         });
         footer.addComponent(ok);
         footer.setComponentAlignment(ok, Alignment.TOP_RIGHT);
-     // Form for editing the bean
+
         final BeanFieldGroup<Customer> binder =
            new BeanFieldGroup<Customer>(Customer.class);
         binder.setItemDataSource(new Customer());
@@ -130,47 +126,6 @@ public class NewTransactionWindow extends Window
         layout.addComponent(binder.buildAndBind("Country", "country"));
         layout.setImmediate(true);
         layout.setData(binder);
-        
-
-        //final Label error = new Label("hjgj", ContentMode.TEXT);
-        //error.setVisible(true);
-        // Buffer the form content
-        //binder.setBuffered(false);
-        
-//        layout.addComponent(new Button("OK", new ClickListener() {
-//            /**
-//             * 
-//             */
-//            private static final long serialVersionUID = 1L;
-//
-//            @Override
-//            public void buttonClick(ClickEvent event) {
-//                try {
-//                    binder.commit();
-//                    error.setVisible(true);
-//                } catch (CommitException e) {
-//                    for (Field<?> field: binder.getFields()) {
-//                        ((AbstractField<?>)field).setRequiredError("ERROR Hai BHAI");
-//                        ErrorMessage errMsg = ((AbstractField<?>)field).getErrorMessage();
-//                        if (errMsg != null) {
-//                            //layout.setComponentError(new Err);
-//                            error.setValue("Error in " +
-//                                field.getCaption() + ": " +
-//                                errMsg.getFormattedHtmlMessage());
-//                            error.setVisible(true);
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }));
-        
-        //Panel for customer details
-        
-
-        
-
-        
         itemTable.setSizeFull();
         itemTable.addStyleName("borderless");
         itemTable.setSelectable(false);
@@ -180,7 +135,6 @@ public class NewTransactionWindow extends Window
         
         itemTable.setFooterVisible(true);
 
-        // Allow dragging items to the reports menu
         itemTable.setMultiSelect(false);
         itemTable.setSelectable(false);
         itemTable.setPageLength(5);
@@ -199,21 +153,14 @@ public class NewTransactionWindow extends Window
         final CheckBox switchEditable = new CheckBox("Editable");
         switchEditable.addValueChangeListener(
                 new Property.ValueChangeListener() {
-            /**
-					 * 
-					 */
 					private static final long serialVersionUID = 1L;
 
-			public void valueChange(ValueChangeEvent event) {
-                itemTable.setEditable(((Boolean)event.getProperty()
-                                     .getValue()).booleanValue());
-                itemTable.setImmediate(true);
-                itemTable.setEnabled(((Boolean)event.getProperty()
-                        .getValue()).booleanValue());
+					public void valueChange(ValueChangeEvent event) {
+						itemTable.setEditable(((Boolean)event.getProperty().getValue()).booleanValue());
+						itemTable.setImmediate(true);
+						itemTable.setEnabled(((Boolean)event.getProperty().getValue()).booleanValue());
             }
         });
-       
-        
         
         if(!isNew)
         {
@@ -224,17 +171,12 @@ public class NewTransactionWindow extends Window
             mItemViewContainer.addMortgageItem(totalWeightCheckBox.getValue(),"","0.0","");
         }
         ThemeResource resource = new ThemeResource("img/addButtonSmall.jpg");
-     // Use the resource
         Image image = new Image("", resource);
         image.setHeight("40px");
         image.setWidth("40px");
         image.setDescription(TOOLTIP);
         image.addClickListener(new MouseEvents.ClickListener()
         {
-            
-            /**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -256,30 +198,22 @@ public class NewTransactionWindow extends Window
         saveBtn.addStyleName("wide");
         saveBtn.addStyleName("default");
         saveBtn.addClickListener(new ClickListener() {
-            /**
-             * 
-             */
             private static final long serialVersionUID = 1L;
 
             @Override
             public void buttonClick(ClickEvent event)
             {
-                //validateData()
                 Component c = layout.getComponent(0);
                 ((TextField)c).setRequired(true);
                 ((TextField)c).setImmediate(true);
                 Notification.show("Not implemented: " +  ((TextField)c).getValue());
-               // close();
             }
         });
 
-      //  main.addComponent(checkbox1);
-
-        // Make some application logic. We use anonymous listener
-        // classes here. The above references were defined as final
-        // to allow accessing them from inside anonymous classes.
         totalWeightCheckBox.addValueChangeListener(new ValueChangeListener() {
-            @Override
+            private static final long serialVersionUID = 1L;
+
+			@Override
             public void valueChange(ValueChangeEvent event)
             {
                 totalWeight.setEnabled(totalWeightCheckBox.getValue());
@@ -290,9 +224,7 @@ public class NewTransactionWindow extends Window
                     {
                        
                         DecimalTextField itemWeight = (DecimalTextField) mItemViewContainer.getItem(li.get(i)).getItemProperty("Item Weight").getValue();
-                        //itemWeight.setValue("0.0");
                         itemWeight.setEnabled(false);
-                        
                     }
                 }
                 else
@@ -302,7 +234,6 @@ public class NewTransactionWindow extends Window
                     {
                        
                         DecimalTextField itemWeight = (DecimalTextField) mItemViewContainer.getItem(li.get(i)).getItemProperty("Item Weight").getValue();
-                        //itemWeight.setValue("0.0");
                         itemWeight.setEnabled(true);
                     }
                 }
@@ -329,11 +260,6 @@ public class NewTransactionWindow extends Window
         topHorizontalLayout.setExpandRatio(layout, 1);
         topHorizontalLayout.setExpandRatio(vL, 3);
         mainLayout.addComponent(topHorizontalLayout);
-        //mainLayout.addComponent(saveCancelLayout);
-        //mainLayout.setComponentAlignment(saveCancelLayout, Alignment.MIDDLE_RIGHT);
-        //mainLayout.setExpandRatio(saveCancelLayout, 1);
-        //mainLayout.setExpandRatio(topHorizontalLayout, 1);
-        
         pL.setContent(mainLayout);
         setContent(pL);
         
@@ -341,7 +267,8 @@ public class NewTransactionWindow extends Window
 
     private void populateComponentData(MortgageTransaction mTrans, MortgageItemViewContainer mItemViewContainer)
     {
-        BeanFieldGroup<Customer> binder = (BeanFieldGroup<Customer>) layout.getData();
+        @SuppressWarnings("unchecked")
+		BeanFieldGroup<Customer> binder = (BeanFieldGroup<Customer>) layout.getData();
         binder.setItemDataSource(mTrans.getCustomer());
        
         transactionDate.setValue(new Date(989));

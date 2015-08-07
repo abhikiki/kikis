@@ -6,16 +6,12 @@ package com.abhishek.fmanage.mortgage.data.container;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.abhishek.fmanage.dasboard.views.transaction.ExistingTransactionWindow;
 import com.abhishek.fmanage.mortgage.data.bean.Customer;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageItem;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageTransaction;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 
 /**
  * @author Abhishek
@@ -27,27 +23,16 @@ public class MortgageTransactionViewContainer extends IndexedContainer
      * Serial Id
      */
     private static final long serialVersionUID = 1L;
-
     public static final String MORTGAGE_TRANSACTION = "MORTGAGE_TRANSACTION";
-
     public static final String DATE_COL_NAME = "Date";
-
     public static final String CUSTOMER_NAME_COL_NAME = "Name";
-
     public static final String AMOUNT_LENDED_COL_NAME = "Amount Lended";
-
     public static final String TOTAL_ITEM_WEIGHT_COL_NAME = "Total Weight";
-
     public static final String INTEREST_RATE_COL_NAME = "Interest Rate(%)";
-
     public static final String ITEMS_COL_NAME = "Items";
-    
     public static final String CONTACT_NUMBER_COL_NAME = "Contact Number";
-
     public static final String EMAIL_ID_COL_NAME = "Email Id";
-
     public static final String CUSTOMER_ADDRESS_COL_NAME = "Address";
-
     public static final String TRANSACTION_DETAIL_BTN_COL_NAME = "Transaction Detail Button";
 
     /**
@@ -55,8 +40,7 @@ public class MortgageTransactionViewContainer extends IndexedContainer
      */
     public MortgageTransactionViewContainer()
     {
-        addContainerProperty(MORTGAGE_TRANSACTION,
-          MortgageTransaction.class, new MortgageTransaction());
+        addContainerProperty(MORTGAGE_TRANSACTION, MortgageTransaction.class, new MortgageTransaction());
         addContainerProperty(DATE_COL_NAME, String.class, "99999999");
         addContainerProperty(CUSTOMER_NAME_COL_NAME, String.class, "");
         addContainerProperty(AMOUNT_LENDED_COL_NAME, String.class, "");
@@ -79,15 +63,11 @@ public class MortgageTransactionViewContainer extends IndexedContainer
         if (item != null)
         {
             item.getItemProperty(MORTGAGE_TRANSACTION).setValue(mortgageTransaction);
-            //item.getItemProperty(TRANSACTION_DETAIL_BTN_COL_NAME).setValue(getTransactionDetailButton(mortgageTransaction));
             item.getItemProperty(DATE_COL_NAME).setValue("14/01/2014");
             Customer customer = mortgageTransaction.getCustomer();
-            item.getItemProperty(CUSTOMER_NAME_COL_NAME).setValue(
-                customer.getFirstName() + " " + customer.getLastName());
-            item.getItemProperty(AMOUNT_LENDED_COL_NAME).setValue(
-                String.valueOf(mortgageTransaction.getAmountPaidToCustomer()));
-            item.getItemProperty(TOTAL_ITEM_WEIGHT_COL_NAME).setValue(
-                String.valueOf(mortgageTransaction.getTotalItemWeight()));
+            item.getItemProperty(CUSTOMER_NAME_COL_NAME).setValue(customer.getFirstName() + " " + customer.getLastName());
+            item.getItemProperty(AMOUNT_LENDED_COL_NAME).setValue(String.valueOf(mortgageTransaction.getAmountPaidToCustomer()));
+            item.getItemProperty(TOTAL_ITEM_WEIGHT_COL_NAME).setValue(String.valueOf(mortgageTransaction.getTotalItemWeight()));
 
             List<MortgageItem> mItemList = mortgageTransaction.getItemList();
             StringBuilder mItemStringBuilder = new StringBuilder("");
@@ -99,30 +79,5 @@ public class MortgageTransactionViewContainer extends IndexedContainer
             item.getItemProperty(CUSTOMER_ADDRESS_COL_NAME).setValue(
                 customer.getStreetAddress1() + " " + customer.getStreetAddress2());
         }
-    }
-    
-    private Button getTransactionDetailButton(final MortgageTransaction mortgageTransaction)
-    {
-        Button detailButton = new Button("Details");
-        //detailButton.setIcon(icon);
-        detailButton.setData(mortgageTransaction);
-        detailButton.addClickListener(new Button.ClickListener()
-        {
-            
-            @Override
-            public void buttonClick(ClickEvent event)
-            {
-//                Window w = new MovieDetailsWindow(DataProvider.getMovieForTitle(item
-//                    .getItemProperty("Title").getValue().toString()), null);
-                MortgageTransaction mTrans = (MortgageTransaction) event.getButton().getData();
-                Window w = new ExistingTransactionWindow(mTrans, false);
-                w.center();
-                w.setModal(true);
-                UI.getCurrent().addWindow(w);
-                w.focus();
-                
-            }
-        });
-        return detailButton;
     }
 }

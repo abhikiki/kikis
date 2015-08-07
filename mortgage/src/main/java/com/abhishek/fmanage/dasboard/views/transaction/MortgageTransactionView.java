@@ -6,17 +6,13 @@ package com.abhishek.fmanage.dasboard.views.transaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-import com.abhishek.fmanage.dashboard.DashboardUI;
 import com.abhishek.fmanage.mortgage.data.bean.Customer;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageCustomerPayment;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageItem;
 import com.abhishek.fmanage.mortgage.data.bean.MortgageTransaction;
 import com.abhishek.fmanage.mortgage.data.container.MortgageTransactionViewContainer;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.navigator.View;
@@ -186,23 +182,7 @@ public class MortgageTransactionView extends VerticalLayout implements View
                     Window w = new ExistingTransactionWindow(mTrans, false);
                     UI.getCurrent().addWindow(w);
                     w.focus();
-                    //createNewReportFromSelection();
                 }
-//                else if (action == discard)
-//                {
-//                    Notification.show("Not implemented in this demo");
-//                }
-//                else if (action == details)
-//                {
-//                    Item item = ((Table) sender).getItem(target);
-//                    if (item != null)
-//                    {
-//                        Window w = new MovieDetailsWindow(DataProvider.getMovieForTitle(item
-//                            .getItemProperty("Title").getValue().toString()), null);
-//                        UI.getCurrent().addWindow(w);
-//                        w.focus();
-//                    }
-//                }
             }
 
             @Override
@@ -211,30 +191,9 @@ public class MortgageTransactionView extends VerticalLayout implements View
                 return new Action[] {transactionDetailAction};
             }
         });
-
-        transactionTable.addValueChangeListener(new ValueChangeListener()
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event)
-            {
-                if (transactionTable.getValue() instanceof Set)
-                {
-                    //Set<Object> val = (Set<Object>) transactionTable.getValue();
-                    //newReport.setEnabled(val.size() > 0);
-                }
-                else
-                {
-                }
-            }
-        });
         transactionTable.setImmediate(true);
     }
 
-    /**
-     * 
-     */
     private Table getMortgageTransactionTable()
     {
         transactionTable = new Table();
@@ -254,18 +213,17 @@ public class MortgageTransactionView extends VerticalLayout implements View
             MortgageTransactionViewContainer.TOTAL_ITEM_WEIGHT_COL_NAME,
             MortgageTransactionViewContainer.CUSTOMER_ADDRESS_COL_NAME,
             MortgageTransactionViewContainer.ITEMS_COL_NAME
-            //MortgageTransactionViewContainer.TRANSACTION_DETAIL_BTN_COL_NAME
             });
         transactionTable.setFooterVisible(true);
-
-        // Allow dragging items to the reports menu
         transactionTable.setMultiSelect(false);
         transactionTable.setPageLength(10);
+
         return transactionTable;
     }
 
     private MortgageTransactionViewContainer getMortgageTransactionViewContainer()
     {
+    	//Currently this is generating test data. We will get this data via rest service
         MortgageTransactionViewContainer mViewContainer = new MortgageTransactionViewContainer();
         for (int i = 0; i < 300; i++)
         {
@@ -319,10 +277,5 @@ public class MortgageTransactionView extends VerticalLayout implements View
         transactionTable.sort(
             new Object[] { MortgageTransactionViewContainer.CUSTOMER_NAME_COL_NAME },
             new boolean[] { false });
-    }
-
-    void createNewReportFromSelection()
-    {
-        ((DashboardUI) getUI()).openReports(transactionTable);
     }
 }

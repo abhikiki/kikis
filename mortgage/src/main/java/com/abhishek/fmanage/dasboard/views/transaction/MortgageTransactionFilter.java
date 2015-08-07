@@ -30,7 +30,6 @@ public class MortgageTransactionFilter
 {
     private static final String DATE_DELIMITER = "/";
 
-
     private static final String DATE_STORAGE_FORMAT = "yyyyMMdd";
 
     /** Container holding all transactions */
@@ -46,6 +45,7 @@ public class MortgageTransactionFilter
     private PopupDateField endPopUpDate;
 
     private Calendar cal = null;
+
     /**
      * Constructor
      * 

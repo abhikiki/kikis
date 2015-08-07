@@ -1,8 +1,5 @@
 package com.abhishek.fmanage.dashboard;
 
-import java.text.DecimalFormat;
-
-import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -13,23 +10,17 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.Align;
-import com.vaadin.ui.Table.RowHeaderMode;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class DashboardView extends VerticalLayout implements View {
-
-    Table t;
+	private static final long serialVersionUID = 1L;
+    private Window notifications;
 
     public DashboardView() {
         setSizeFull();
@@ -49,7 +40,6 @@ public class DashboardView extends VerticalLayout implements View {
 
         Button notify = new Button("2");
         notify.setDescription("Notifications (2 unread)");
-        // notify.addStyleName("borderless");
         notify.addStyleName("notifications");
         notify.addStyleName("unread");
         notify.addStyleName("icon-only");
@@ -57,7 +47,6 @@ public class DashboardView extends VerticalLayout implements View {
         notify.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                ((DashboardUI) getUI()).clearDashboardButtonBadge();
                 event.getButton().removeStyleName("unread");
                 event.getButton().setDescription("Notifications");
 
@@ -148,10 +137,8 @@ public class DashboardView extends VerticalLayout implements View {
                                 addComponent(ok);
                             }
                         });
-
                     }
                 });
-
             }
         });
         top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
@@ -162,81 +149,12 @@ public class DashboardView extends VerticalLayout implements View {
         row.setSpacing(true);
         addComponent(row);
         setExpandRatio(row, 1.5f);
-
-        TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
-        notes.setSizeFull();
-        CssLayout panel = createPanel(notes);
-        panel.addStyleName("notes");
-        row.addComponent(panel);
-
-        row = new HorizontalLayout();
-        row.setMargin(true);
-        row.setSizeFull();
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2);
-
-        t = new Table() {
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Revenue")) {
-                    if (property != null && property.getValue() != null) {
-                        Double r = (Double) property.getValue();
-                        String ret = new DecimalFormat("#.##").format(r);
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        t.setCaption("Top 10 Titles by Revenue");
-
-        t.setWidth("100%");
-        t.setPageLength(0);
-        t.addStyleName("plain");
-        t.addStyleName("borderless");
-        t.setSortEnabled(false);
-        t.setColumnAlignment("Revenue", Align.RIGHT);
-        t.setRowHeaderMode(RowHeaderMode.INDEX);
-
-        row.addComponent(createPanel(t));
-
-    }
-
-    private CssLayout createPanel(Component content) {
-        CssLayout panel = new CssLayout();
-        panel.addStyleName("layout-panel");
-        panel.setSizeFull();
-
-        Button configure = new Button();
-        configure.addStyleName("configure");
-        configure.addStyleName("icon-cog");
-        configure.addStyleName("icon-only");
-        configure.addStyleName("borderless");
-        configure.setDescription("Configure");
-        configure.addStyleName("small");
-        configure.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        panel.addComponent(configure);
-
-        panel.addComponent(content);
-        return panel;
     }
 
     @Override
     public void enter(ViewChangeEvent event) {
-       
+    	//TODO
     }
-
-    Window notifications;
 
     private void buildNotifications(ClickEvent event) {
         notifications = new Window("Notifications");

@@ -1,13 +1,3 @@
-/**
- * DISCLAIMER
- * 
- * The quality of the code is such that you should not copy any of it as best
- * practice how to build Vaadin applications.
- * 
- * @author jouni@vaadin.com
- * 
- */
-
 package com.abhishek.fmanage.dashboard;
 
 import java.util.HashMap;
@@ -48,73 +38,71 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * This class represent the main UI of the application
+ * 
+ * @author Abhishek Gupta
+ *
+ */
 @Theme("dashboard")
 @Title("Finance Management Dashboard")
 public class DashboardUI extends UI {
 
-    private static final long serialVersionUID = 1L;
+    private static final String SIGN_OUT = "Sign Out";
+	private static final String EXIT = "Exit";
+	private static final String MY_ACCOUNT = "My Account";
+	private static final String PREFERENCES = "Preferences";
+	private static final String SETTINGS = "Settings";
+	private static final String SIGN_IN = "Sign In";
+	private static final long serialVersionUID = 1L;
 
-    CssLayout root = new CssLayout();
-
-    VerticalLayout loginLayout;
-
-    CssLayout menu = new CssLayout();
-    CssLayout content = new CssLayout();
+	private CssLayout root = new CssLayout();
+    private VerticalLayout loginLayout;
+    private CssLayout menu = new CssLayout();
+    private CssLayout content = new CssLayout();
 
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
-        {
+		private static final long serialVersionUID = -8100418558296244344L;
+		{
             put("/dashboard", DashboardView.class);
             put("/transactions", MortgageTransactionView.class);
         }
     };
 
-    HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
-
+    private HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
     private Navigator nav;
-
     private HelpManager helpManager;
 
     @Override
-    protected void init(VaadinRequest request) {
-        //getSession().setConverterFactory(new MyConverterFactory());
-
-        helpManager = new HelpManager(this);
-
+    protected void init(final VaadinRequest request) {
         setLocale(Locale.US);
-
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
 
-        // Unfortunate to use an actual widget here, but since CSS generated
-        // elements can't be transitioned yet, we must
         Label bg = new Label();
         bg.setSizeUndefined();
         bg.addStyleName("login-bg");
         root.addComponent(bg);
 
         buildLoginView(false);
-
     }
 
-    private void buildLoginView(boolean exit) {
+    private void buildLoginView(final boolean exit) {
         if (exit) {
             root.removeAllComponents();
         }
         helpManager.closeAll();
-        HelpOverlay w = helpManager
-                .addOverlay(
-                        "Welcome to the Dashboard Demo Application",
-                        "<p>This application is not real, it only demonstrates an application built with the <a href=\"http://vaadin.com\">Vaadin framework</a>.</p><p>No username or password is required, just click the ‘Sign In’ button to continue. You can try out a random username and password, though.</p>",
+        HelpOverlay w = helpManager.addOverlay(
+                        "Welcome to the Mortgage Dashboard Demo Application",
+                        "<p>No username or password is required currently, just click the (Sign In) button to continue.</p>",
                         "login");
         w.center();
         addWindow(w);
-
         addStyleName("login");
 
         loginLayout = new VerticalLayout();
@@ -122,13 +110,13 @@ public class DashboardUI extends UI {
         loginLayout.addStyleName("login-layout");
         root.addComponent(loginLayout);
 
-        final CssLayout loginPanel = new CssLayout();
-        loginPanel.addStyleName("login-panel");
-
         HorizontalLayout labels = new HorizontalLayout();
         labels.setWidth("100%");
         labels.setMargin(true);
         labels.addStyleName("labels");
+        
+        final CssLayout loginPanel = new CssLayout();
+        loginPanel.addStyleName("login-panel");
         loginPanel.addComponent(labels);
 
         Label welcome = new Label("Welcome");
@@ -156,21 +144,24 @@ public class DashboardUI extends UI {
         final PasswordField password = new PasswordField("Password");
         fields.addComponent(password);
 
-        final Button signin = new Button("Sign In");
+        final Button signin = new Button(SIGN_IN);
         signin.addStyleName("default");
         fields.addComponent(signin);
         fields.setComponentAlignment(signin, Alignment.BOTTOM_LEFT);
 
-        final ShortcutListener enter = new ShortcutListener("Sign In",
-                KeyCode.ENTER, null) {
-            @Override
+        final ShortcutListener enter = new ShortcutListener(SIGN_IN, KeyCode.ENTER, null) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void handleAction(Object sender, Object target) {
                 signin.click();
             }
         };
 
         signin.addClickListener(new ClickListener() {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public void buttonClick(ClickEvent event) {
                 if (username.getValue() != null
                         && username.getValue().equals("")
@@ -180,10 +171,8 @@ public class DashboardUI extends UI {
                     buildMainView();
                 } else {
                     if (loginPanel.getComponentCount() > 2) {
-                        // Remove the previous error message
                         loginPanel.removeComponent(loginPanel.getComponent(2));
                     }
-                    // Add new error message
                     Label error = new Label(
                             "Wrong username or password. <span>Hint: try empty values</span>",
                             ContentMode.HTML);
@@ -199,37 +188,28 @@ public class DashboardUI extends UI {
         });
 
         signin.addShortcutListener(enter);
-
         loginPanel.addComponent(fields);
-
         loginLayout.addComponent(loginPanel);
         loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
     }
 
     private void buildMainView() {
-
         nav = new Navigator(this, content);
-
         for (String route : routes.keySet()) {
             nav.addView(route, routes.get(route));
         }
-
         helpManager.closeAll();
         removeStyleName("login");
         root.removeComponent(loginLayout);
-
         root.addComponent(new HorizontalLayout() {
             {
                 setSizeFull();
                 addStyleName("main-view");
                 addComponent(new VerticalLayout() {
-                    // Sidebar
                     {
                         addStyleName("sidebar");
                         setWidth(null);
                         setHeight("100%");
-
-                        // Branding element
                         addComponent(new CssLayout() {
                             {
                                 addStyleName("branding");
@@ -238,9 +218,6 @@ public class DashboardUI extends UI {
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
                                 addComponent(logo);
-                                // addComponent(new Image(null, new
-                                // ThemeResource(
-                                // "img/branding.png")));
                             }
                         });
 
@@ -250,12 +227,12 @@ public class DashboardUI extends UI {
 
                         // User menu
                         addComponent(new VerticalLayout() {
-                            {
+							private static final long serialVersionUID = 1L;
+
+							{
                                 setSizeUndefined();
                                 addStyleName("user");
-                                Image profilePic = new Image(
-                                        null,
-                                        new ThemeResource("img/profile-pic.png"));
+                                Image profilePic = new Image(null, new ThemeResource("img/profile-pic.png"));
                                 profilePic.setWidth("34px");
                                 addComponent(profilePic);
                                 Label userName = new Label("Abhishek Gupta");
@@ -263,26 +240,26 @@ public class DashboardUI extends UI {
                                 addComponent(userName);
 
                                 Command cmd = new Command() {
-                                    @Override
+									private static final long serialVersionUID = 1L;
+
+									@Override
                                     public void menuSelected(
                                             MenuItem selectedItem) {
-                                        Notification
-                                                .show("Not implemented in this demo");
+                                        Notification.show("Not implemented in this demo");
                                     }
                                 };
                                 MenuBar settings = new MenuBar();
-                                MenuItem settingsMenu = settings.addItem("",
-                                        null);
+                                MenuItem settingsMenu = settings.addItem("", null);
                                 settingsMenu.setStyleName("icon-cog");
-                                settingsMenu.addItem("Settings", cmd);
-                                settingsMenu.addItem("Preferences", cmd);
+                                settingsMenu.addItem(SETTINGS, cmd);
+                                settingsMenu.addItem(PREFERENCES, cmd);
                                 settingsMenu.addSeparator();
-                                settingsMenu.addItem("My Account", cmd);
+                                settingsMenu.addItem(MY_ACCOUNT, cmd);
                                 addComponent(settings);
 
-                                Button exit = new NativeButton("Exit");
+                                Button exit = new NativeButton(EXIT);
                                 exit.addStyleName("icon-cancel");
-                                exit.setDescription("Sign Out");
+                                exit.setDescription(SIGN_OUT);
                                 addComponent(exit);
                                 exit.addClickListener(new ClickListener() {
                                     @Override
@@ -294,19 +271,14 @@ public class DashboardUI extends UI {
                         });
                     }
                 });
-                // Content
                 addComponent(content);
                 content.setSizeFull();
                 content.addStyleName("view-content");
                 setExpandRatio(content, 1);
             }
-
         });
 
         menu.removeAllComponents();
-
-//        for (final String view : new String[] { "dashboard", "sales",
-//                "transactions", "reports", "schedule", "inventory", "inventor1", }) {
         for (final String view : new String[] { "dashboard", "transactions"}) {
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));
@@ -322,7 +294,6 @@ public class DashboardUI extends UI {
             });
 
             if (view.equals("reports")) {
-                // Add drop target to reports button
                 DragAndDropWrapper reports = new DragAndDropWrapper(b);
                 reports.setDragStartMode(DragStartMode.NONE);
                 reports.setDropHandler(new DropHandler() {
@@ -332,8 +303,7 @@ public class DashboardUI extends UI {
                         clearMenuSelection();
                         viewNameToMenuButton.get("/reports").addStyleName(
                                 "selected");
-                        autoCreateReport = true;
-                        items = event.getTransferable();
+                        Transferable items = event.getTransferable();
                         nav.navigateTo("/reports");
                     }
 
@@ -359,22 +329,19 @@ public class DashboardUI extends UI {
         viewNameToMenuButton.get("/dashboard").setCaption(
                 "Dashboard<span class=\"badge\">2</span>");
 
-        String f = Page.getCurrent().getUriFragment();
-        if (f != null && f.startsWith("!")) {
-            f = f.substring(1);
+        String uriFragment = Page.getCurrent().getUriFragment();
+        if (uriFragment != null && uriFragment.startsWith("!")) {
+            uriFragment = uriFragment.substring(1);
         }
-        if (f == null || f.equals("") || f.equals("/")) {
+        if (uriFragment == null || uriFragment.equals("") || uriFragment.equals("/")) {
             nav.navigateTo("/dashboard");
             menu.getComponent(0).addStyleName("selected");
-            helpManager.showHelpFor(DashboardView.class);
         } else {
-            nav.navigateTo(f);
-            helpManager.showHelpFor(routes.get(f));
-            viewNameToMenuButton.get(f).addStyleName("selected");
+            nav.navigateTo(uriFragment);
+            viewNameToMenuButton.get(uriFragment).addStyleName("selected");
         }
 
         nav.addViewChangeListener(new ViewChangeListener() {
-
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {
                 helpManager.closeAll();
@@ -384,49 +351,20 @@ public class DashboardUI extends UI {
             @Override
             public void afterViewChange(ViewChangeEvent event) {
                 View newView = event.getNewView();
-                helpManager.showHelpFor(newView);
             }
         });
 
     }
 
-    private Transferable items;
-
     private void clearMenuSelection() {
-        for (Iterator<Component> it = menu.getComponentIterator(); it.hasNext();) {
+        for (Iterator<Component> it = menu.iterator(); it.hasNext();) {
             Component next = it.next();
             if (next instanceof NativeButton) {
                 next.removeStyleName("selected");
             } else if (next instanceof DragAndDropWrapper) {
-                // Wow, this is ugly (even uglier than the rest of the code)
                 ((DragAndDropWrapper) next).iterator().next()
                         .removeStyleName("selected");
             }
         }
-    }
-
-    void updateReportsButtonBadge(String badgeCount) {
-        viewNameToMenuButton.get("/reports").setHtmlContentAllowed(true);
-        viewNameToMenuButton.get("/reports").setCaption(
-        "Reports<span class=\"badge\">" + badgeCount + "</span>");
-    }
-
-    void clearDashboardButtonBadge() {
-        viewNameToMenuButton.get("/dashboard").setCaption("Dashboard");
-    }
-
-    boolean autoCreateReport = false;
-    Table transactions;
-
-    public void openReports(Table t) {
-        transactions = t;
-        autoCreateReport = true;
-        nav.navigateTo("/reports");
-        clearMenuSelection();
-        viewNameToMenuButton.get("/reports").addStyleName("selected");
-    }
-
-    HelpManager getHelpManager() {
-        return helpManager;
     }
 }
