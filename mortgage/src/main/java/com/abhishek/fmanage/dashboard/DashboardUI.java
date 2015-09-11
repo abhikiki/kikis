@@ -75,7 +75,7 @@ public class DashboardUI extends UI {
 
     private HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
     private Navigator nav;
-    private HelpManager helpManager;
+    private HelpManager helpManager = new HelpManager();
 
     @Override
     protected void init(final VaadinRequest request) {
@@ -283,14 +283,11 @@ public class DashboardUI extends UI {
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));
             b.addStyleName("icon-" + view);
-            b.addClickListener(new ClickListener() {
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    clearMenuSelection();
-                    event.getButton().addStyleName("selected");
-                    if (!nav.getState().equals("/" + view))
-                        nav.navigateTo("/" + view);
-                }
+            b.addClickListener(event->{
+            	clearMenuSelection();
+                event.getButton().addStyleName("selected");
+                if (!nav.getState().equals("/" + view))
+                    nav.navigateTo("/" + view);
             });
 
             if (view.equals("reports")) {
