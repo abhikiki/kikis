@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
+import views.RetailInvoiceView;
+
 import com.abhishek.fmanage.dasboard.views.transaction.MortgageTransactionView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -70,6 +72,7 @@ public class DashboardUI extends UI {
 		{
             put("/dashboard", DashboardView.class);
             put("/transactions", MortgageTransactionView.class);
+            put("/retailbilling", RetailInvoiceView.class);
         }
     };
 
@@ -279,7 +282,7 @@ public class DashboardUI extends UI {
         });
 
         menu.removeAllComponents();
-        for (final String view : new String[] { "dashboard", "transactions"}) {
+        for (final String view : new String[] { "dashboard", "transactions", "retailbilling"}) {
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));
             b.addStyleName("icon-" + view);
