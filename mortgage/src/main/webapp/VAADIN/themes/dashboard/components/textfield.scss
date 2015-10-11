@@ -17,8 +17,18 @@
 	}
 	
 	.v-textfield-fail{
-		background: #FF7B7C;
+		background: #FBB5B5;
 	}
+	
+	.v-textfield-warning{
+		background: #F5EA8E;
+	}
+	
+	.v-textfield-success{
+		background: #C8F5DC;
+	}
+	
+	
 	input.v-widget.v-textfield,
 	.v-filterselect {
 		padding: .25em .3em;	
