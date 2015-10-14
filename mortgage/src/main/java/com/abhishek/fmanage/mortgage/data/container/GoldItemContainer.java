@@ -1,5 +1,7 @@
 package com.abhishek.fmanage.mortgage.data.container;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -42,7 +44,8 @@ public class GoldItemContainer extends IndexedContainer{
 	
 	 public double getTotal(){
 		 double totalCost= 0.0;
-	        for (Object obj: getAllItemIds()){
+		 List<Object> itemIdsList = getAllItemIds();
+	        for (Object obj: itemIdsList){
 	        	TextField goldPriceTxtField = (TextField)getItem(obj).getItemProperty(PRICE).getValue();
 	        	String itemPrice = goldPriceTxtField.getValue();
 	        	totalCost += NumberUtils.isNumber(itemPrice) ? NumberUtils.toDouble(itemPrice) : 0.0;
@@ -75,6 +78,7 @@ public class GoldItemContainer extends IndexedContainer{
 		itemPrice.setRequired(true);
 		itemPrice.setValidationVisible(true);
 		itemPrice.setWidth("100%");
+		itemPrice.setMaxLength(10);
 		
 		itemPrice.addValidator(new Validator() {
 		
@@ -259,7 +263,7 @@ public class GoldItemContainer extends IndexedContainer{
 							
 					}
 					
-					goldPriceTxtField.setValue(String.valueOf(goldPrice));
+					goldPriceTxtField.setValue(String.format("%.3f", goldPrice));
 					goldPriceTxtField.addStyleName("v-textfield-success");
 					goldPriceTxtField.setImmediate(true);
 					Notification.show("Item entry complete");
