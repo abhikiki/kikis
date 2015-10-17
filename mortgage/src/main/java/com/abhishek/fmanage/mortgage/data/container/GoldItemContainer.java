@@ -11,14 +11,18 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.MouseEvents;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 public class GoldItemContainer extends IndexedContainer{
 
 	private static final long serialVersionUID = 1L;
+	public static final String DELETE = "Delete";
 	public static final String PRICE = "Price(INR)";
 	public static final String GOLD_RATE = "GoldRate";
 	public static final String MAKING_CHARGE = "MakingCharge";
@@ -31,6 +35,7 @@ public class GoldItemContainer extends IndexedContainer{
 	
 
 	public GoldItemContainer(){
+		 addContainerProperty(DELETE, Image.class, new Image());
 		 addContainerProperty(HALL_MARK_TYPE, ComboBox.class, new ComboBox());
 	     addContainerProperty(ITEM_NAME, ComboBox.class, new ComboBox());
 	     addContainerProperty(QUANTITY, TextField.class, new TextField());
@@ -42,7 +47,7 @@ public class GoldItemContainer extends IndexedContainer{
 	     addContainerProperty(PRICE, TextField.class, new TextField());
 	}
 	
-	 public double getTotal(){
+	 public Double getTotal(){
 		 double totalCost= 0.0;
 		 List<Object> itemIdsList = getAllItemIds();
 	        for (Object obj: itemIdsList){
@@ -58,8 +63,25 @@ public class GoldItemContainer extends IndexedContainer{
     {
         Object goldItemRowId = addItem();
         Item item = getItem(goldItemRowId);
+        ThemeResource resource = new ThemeResource("img/removeButtonSmall.jpg");
+        // Use the resource
+           final Image image = new Image("", resource);
+           image.setHeight("20px");
+           image.setWidth("20px");
+           image.setDescription("Remove Item");
+           image.setData(goldItemRowId);
+           image.addClickListener(new MouseEvents.ClickListener()
+           {
+               @Override
+               public void click(com.vaadin.event.MouseEvents.ClickEvent event)
+               {
+                   removeItem(image.getData());
+               }
+           });
+
         if (item != null)
         {
+        	item.getItemProperty(DELETE).setValue(image);
         	item.getItemProperty(HALL_MARK_TYPE).setValue(getHallMarkTypeList());
         	item.getItemProperty(ITEM_NAME).setValue(getItemNameList());
         	item.getItemProperty(QUANTITY).setValue(getQuantity(goldItemRowId));
@@ -79,7 +101,6 @@ public class GoldItemContainer extends IndexedContainer{
 		itemPrice.setValidationVisible(true);
 		itemPrice.setWidth("100%");
 		itemPrice.setMaxLength(10);
-		
 		itemPrice.addValidator(new Validator() {
 		
 			private static final long serialVersionUID = 1L;

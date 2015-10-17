@@ -7,14 +7,12 @@ import com.abhishek.fmanage.mortgage.data.container.GoldItemContainer;
 import com.abhishek.fmanage.mortgage.data.container.SilverItemContainer;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -25,42 +23,45 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 	private GoldItemContainer goldItemContainer = new GoldItemContainer();
 	private SilverItemContainer silverItemContainer = new SilverItemContainer();
 	private DiamondItemContainer diamondItemContainer = new DiamondItemContainer();
-	private TextField oldGoldPurchasePriceNet = new TextField();
 	private Table goldBillingTable = new Table();
 	
 	double totalSilverItemPrice = 0.0;
 	@Override
 	public void enter(ViewChangeEvent event) {
 		setSizeFull();
-			
-		 final Button newTransactionBtn = new Button("Add Gold Item");
-	        newTransactionBtn.addClickListener(new ClickListener()
-	        {
-	            private static final long serialVersionUID = 1L;
+		addComponent(getGoldBillingLayout());
+		addComponent(getSilverItemTable());
+		addComponent(getDiamondTable());
+	}
 
-	            @Override
-	            public void buttonClick(ClickEvent event)
+	private VerticalLayout getGoldBillingLayout() {
+		 ThemeResource resource = new ThemeResource("img/addButtonSmall.jpg");
+	        Image addNewGoldItemimage = new Image("", resource);
+	        addNewGoldItemimage.setHeight("30px");
+	        addNewGoldItemimage.setWidth("30px");
+	        addNewGoldItemimage.setDescription("Add New Item");
+	        addNewGoldItemimage.addClickListener(new MouseEvents.ClickListener()
+	        {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+	            public void click(com.vaadin.event.MouseEvents.ClickEvent event)
 	            {
-	            	goldItemContainer.addGoldItem();
-	                goldBillingTable.setPageLength(goldItemContainer.size());
+					goldItemContainer.addGoldItem();
+	                //goldBillingTable.setPageLength(goldItemContainer.size());
 	                addCustomTableDataContainerValueChange(goldBillingTable);
 	            }
 	        });
 	        
-		HorizontalLayout goldLayout = new HorizontalLayout();
+		VerticalLayout goldLayout = new VerticalLayout();
 		goldLayout.setSizeFull();
-		goldBillingTable.setWidth("75%");
 		goldBillingTable = getGoldBillingTable();
+		goldLayout.addComponent(addNewGoldItemimage);
 		goldLayout.addComponent(goldBillingTable);
-		goldLayout.addComponent(newTransactionBtn);
 		goldLayout.setExpandRatio(goldBillingTable, 3);
-		goldLayout.setExpandRatio(newTransactionBtn, 1);
-		goldLayout.setComponentAlignment(newTransactionBtn, Alignment.TOP_RIGHT);
-		addComponent(goldLayout);
-		//addComponent(getGoldBillingTable());
-		
-		addComponent(getSilverItemTable());
-		addComponent(getDiamondTable());
+		goldLayout.setExpandRatio(addNewGoldItemimage, 1f);
+	//	goldLayout.setComponentAlignment(newGoldItemBtn, Alignment.TOP_RIGHT);
+		return goldLayout;
 	}
 
 	private Component getDiamondTable() {
@@ -86,7 +87,7 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 	            });
 	        diamondItemTable.setFooterVisible(true);
 	        diamondItemTable.setMultiSelect(false);
-	        diamondItemTable.setPageLength(3);
+	        diamondItemTable.setPageLength(2);
 	        diamondItemTable.setColumnFooter(DiamondItemContainer.PRICE, "Total Silver Price=" + 0.0);
 	        return diamondItemTable;
 	}
@@ -148,12 +149,15 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 	        goldItemTable.setSelectable(false);
 	        goldItemTable.setColumnCollapsingAllowed(false);
 	        goldItemTable.setColumnReorderingAllowed(true);
-	        goldItemTable.setWidth("100%");
-	        goldItemTable.setImmediate(true);
+	        goldItemTable.setWidth("85%");
 	        goldItemContainer.addGoldItem();
 	        goldItemTable.setContainerDataSource(goldItemContainer);
-	       
+	        goldItemTable.addStyleName("gold-table-header");
+	        goldItemTable.addStyleName("gold-table-footer");
+	        goldItemTable.addStyleName("gold-table-footer-container");
+	        goldItemTable.addStyleName("gold-table-row");
 	        goldItemTable.setVisibleColumns(new Object[] {
+	        		GoldItemContainer.DELETE,
 	        		GoldItemContainer.HALL_MARK_TYPE,
 	        		GoldItemContainer.ITEM_NAME,
 	        		GoldItemContainer.QUANTITY,
@@ -166,7 +170,8 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 	            });
 	        goldItemTable.setFooterVisible(true);
 	        goldItemTable.setMultiSelect(false);
-	        goldItemTable.setPageLength(4);
+	        goldItemTable.setPageLength(5);
+	        goldItemTable.setColumnWidth(GoldItemContainer.DELETE, 70);
 	        goldItemTable.setColumnWidth(GoldItemContainer.ITEM_NAME, 150);
 	        goldItemTable.setColumnWidth(GoldItemContainer.HALL_MARK_TYPE, 90);
 	        goldItemTable.setColumnWidth(GoldItemContainer.QUANTITY, 60);
@@ -176,7 +181,8 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 	        goldItemTable.setColumnWidth(GoldItemContainer.MAKING_CHARGE_TYPE, 100);
 	        goldItemTable.setColumnWidth(GoldItemContainer.PIECE_PAIR, 100);
 	        goldItemTable.setColumnWidth(GoldItemContainer.PRICE, 120);
-	        goldItemTable.setColumnFooter(SilverItemContainer.PRICE, ((GoldItemContainer)goldItemTable.getContainerDataSource()).getTotal()+"");
+	        goldItemTable.setColumnFooter(GoldItemContainer.PRICE, ((GoldItemContainer)goldItemTable.getContainerDataSource()).getTotal() +"");
+	        goldItemTable.setColumnFooter(GoldItemContainer.DELETE, ("No. Of Items=" + goldItemTable.size()));
 
 	        addCustomTableDataContainerValueChange(goldItemTable);
 	        goldItemTable.setImmediate(true);
@@ -185,6 +191,7 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 
 	private void addCustomTableDataContainerValueChange(Table goldItemTable) {
 		Collection<?> itemIdsList = goldItemTable.getItemIds();
+		goldItemTable.setColumnFooter(GoldItemContainer.DELETE, ("Items=" + goldItemTable.size()));
 		for (Object obj : itemIdsList){
 			TextField itemTxtField = (TextField)(goldItemContainer.getItem(obj).getItemProperty(GoldItemContainer.PRICE).getValue());
 		    itemTxtField.setImmediate(true);
@@ -193,10 +200,19 @@ public class RetailInvoiceView extends VerticalLayout implements View{
 
 				@Override
 				public void valueChange(ValueChangeEvent event) {
-					goldItemTable.setColumnFooter(GoldItemContainer.PRICE, ((GoldItemContainer)goldItemTable.getContainerDataSource()).getTotal()+"");
-					
+					goldItemTable.setColumnFooter(GoldItemContainer.PRICE, "Sum=" + ((GoldItemContainer)goldItemTable.getContainerDataSource()).getTotal().toString());
 				}
 			});
+		    Image deleteImage = (Image)(goldItemContainer.getItem(obj).getItemProperty(GoldItemContainer.DELETE).getValue());
+		    deleteImage.addClickListener(new MouseEvents.ClickListener()
+	           {
+	               @Override
+	               public void click(com.vaadin.event.MouseEvents.ClickEvent event)
+	               {
+	            	   goldItemTable.setColumnFooter(GoldItemContainer.PRICE, "Sum=" + ((GoldItemContainer)goldItemTable.getContainerDataSource()).getTotal());
+	            	   goldItemTable.setColumnFooter(GoldItemContainer.DELETE, ("Items=" + goldItemTable.size()));
+	               }
+	           });
 		}
 	}
 }

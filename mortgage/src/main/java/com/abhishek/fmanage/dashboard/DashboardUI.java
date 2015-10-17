@@ -21,6 +21,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractSelect.AcceptItem;
 import com.vaadin.ui.Alignment;
@@ -82,6 +83,7 @@ public class DashboardUI extends UI {
 
     @Override
     protected void init(final VaadinRequest request) {
+    	VaadinSession.getCurrent().getSession().setMaxInactiveInterval(1800);
         setLocale(Locale.US);
         setContent(root);
         root.addStyleName("root");
