@@ -7,16 +7,18 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.UserError;
+import com.vaadin.data.validator.DoubleRangeValidator;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
-public class SilverItemContainer extends IndexedContainer{
+public class SilverItemContainer extends IndexedContainer implements CustomItemContainerInterface{
 
 	private static final long serialVersionUID = 1L;
+	public static final String DELETE = "Delete";
 	public static final String PRICE = "Price(INR)";
 	public static final String SILVER_RATE = "SilverRate";
 	public static final String MAKING_CHARGE = "MakingCharge";
@@ -30,6 +32,7 @@ public class SilverItemContainer extends IndexedContainer{
 	
 
 	public SilverItemContainer(){
+		addContainerProperty(DELETE, Image.class, new Image());
 	     addContainerProperty(ITEM_NAME, ComboBox.class, new ComboBox());
 	     addContainerProperty(QUANTITY, TextField.class, new TextField());
 	     addContainerProperty(PIECE_PAIR, ComboBox.class, new ComboBox());
@@ -41,7 +44,7 @@ public class SilverItemContainer extends IndexedContainer{
 	    
 	}
 	
-	 public double getTotal(){
+	 public Double getTotal(){
 		 double totalCost= 0.0;
 	        for (Object obj: getAllItemIds()){
 	        	TextField goldPriceTxtField = (TextField)getItem(obj).getItemProperty(PRICE).getValue();
@@ -52,12 +55,21 @@ public class SilverItemContainer extends IndexedContainer{
 	    }
 	 
 	@SuppressWarnings("unchecked")
-    public void addSilverItem()
+    public void addCustomItem()
     {
         Object silverItemRowId = addItem();
         Item item = getItem(silverItemRowId);
+        ThemeResource resource = new ThemeResource("img/removeButtonSmall.jpg");
+        // Use the resource
+           final Image image = new Image("", resource);
+           image.setHeight("20px");
+           image.setWidth("20px");
+           image.setDescription("Remove Item");
+           image.setData(silverItemRowId);
+           image.addClickListener((event -> removeItem(image.getData())));
         if (item != null)
         {
+        	item.getItemProperty(DELETE).setValue(image);
         	item.getItemProperty(ITEM_NAME).setValue(getItemNameList());
         	item.getItemProperty(QUANTITY).setValue(getQuantity(silverItemRowId));
         	item.getItemProperty(PIECE_PAIR).setValue(getPiecePair());
@@ -75,22 +87,17 @@ public class SilverItemContainer extends IndexedContainer{
 		itemPrice.setRequired(true);
 		itemPrice.setEnabled(false);
 		itemPrice.setValidationVisible(true);
-		itemPrice.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				if(!NumberUtils.isNumber(String.valueOf(value)) 
-						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					itemPrice.setComponentError(new UserError("Must be number and > 0"));
-					itemPrice.addStyleName("v-textfield-fail");
-				}else{
-					itemPrice.setComponentError(null);
-					itemPrice.removeStyleName("v-textfield-fail");
-				}
-			}
-		});
+		itemPrice.setEnabled(false);
+		itemPrice.setStyleName("my-disabled");
+		itemPrice.addValidator(new DoubleRangeValidator("Must be number and > 0",  0.1, null));
+		itemPrice.addValidator(
+			(value) -> {
+							if(!NumberUtils.isNumber(String.valueOf(value)) 
+									|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
+								itemPrice.addStyleName("v-textfield-fail");
+							}else{
+								itemPrice.removeStyleName("v-textfield-fail");
+							}});
 		return itemPrice;
 
 	}
@@ -102,22 +109,14 @@ public class SilverItemContainer extends IndexedContainer{
 		silverRate.setValidationVisible(true);
 		silverRate.setWidth("80%");
 		silverRate.addValueChangeListener(getCustomValueChangeListener(currentItemId));
-		silverRate.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				if(!NumberUtils.isNumber(String.valueOf(value)) 
-						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					silverRate.setComponentError(new UserError("Must be number and > 0"));
-					silverRate.addStyleName("v-textfield-fail");
-				}else{
-					silverRate.setComponentError(null);
-					silverRate.removeStyleName("v-textfield-fail");
-				}
-			}
-		});
+		silverRate.addValidator(
+				(value) -> {
+								if(!NumberUtils.isNumber(String.valueOf(value)) 
+										|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
+									silverRate.addStyleName("v-textfield-fail");
+								}else{
+									silverRate.removeStyleName("v-textfield-fail");
+								}});
 		return silverRate;
 	}
 
@@ -128,23 +127,18 @@ public class SilverItemContainer extends IndexedContainer{
 		makingCharge.setValidationVisible(true);
 		makingCharge.setWidth("100%");
 		makingCharge.addValueChangeListener(getCustomValueChangeListener(currentItemId));
-		makingCharge.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
+		makingCharge.addValidator(new DoubleRangeValidator("Must be number and >= 0", 0.0, null));
+		makingCharge.addValidator(
+			(value) -> {
 				if(!NumberUtils.isNumber(String.valueOf(value)) 
-						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					makingCharge.setComponentError(new UserError("Must be number and > 0"));
+						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) < 0.0))){
 					makingCharge.addStyleName("v-textfield-fail");
-					
+
 				}else{
 					makingCharge.setComponentError(null);
 					makingCharge.removeStyleName("v-textfield-fail");
 				}
-			}
-		});
+			});
 		return makingCharge;
 	}
 
@@ -166,23 +160,17 @@ public class SilverItemContainer extends IndexedContainer{
 		weight.setValidationVisible(true);
 		weight.setWidth("100%");
 		weight.addValueChangeListener(getCustomValueChangeListener(currentItemId));
-		weight.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
+		weight.addValidator(new DoubleRangeValidator("Must be number and > 0", 0.1, null));
+		weight.addValidator(
+			(value) -> {
 				if(!NumberUtils.isNumber(String.valueOf(value)) 
 						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					weight.setComponentError(new UserError("Must be number and > 0"));
 					weight.addStyleName("v-textfield-fail");
-					
 				}else{
 					weight.setComponentError(null);
 					weight.removeStyleName("v-textfield-fail");
 				}
-			}
-		});
+		});	
 		return weight;
 	}
 
@@ -201,22 +189,18 @@ public class SilverItemContainer extends IndexedContainer{
 		quantity.setValidationVisible(true);
 		quantity.setWidth("90%");
 		quantity.addValueChangeListener(getCustomValueChangeListener(currentItemId));
-		quantity.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
+		quantity.addValidator(new DoubleRangeValidator("Must be number and > 0", 0.1, null));
+		quantity.addValidator((value) ->
+			{
 				if(!NumberUtils.isDigits(String.valueOf(value)) 
-						|| ( NumberUtils.isDigits(String.valueOf(value)) && (NumberUtils.toInt(String.valueOf(value)) <= 0))){
-					quantity.setComponentError(new UserError("Must be number and > 0"));
-					quantity.addStyleName("v-textfield-fail");
+				|| ( NumberUtils.isDigits(String.valueOf(value))
+				&& (NumberUtils.toInt(String.valueOf(value)) <= 0))){
+				quantity.addStyleName("v-textfield-fail");
 				}else{
 					quantity.setComponentError(null);
 					quantity.removeStyleName("v-textfield-fail");
 				}
-			}
-		});
+			});
 		return quantity;
 	}
 
@@ -237,7 +221,7 @@ public class SilverItemContainer extends IndexedContainer{
 				double goldRate = NumberUtils.isNumber(goldRateTxtField.getValue()) ? NumberUtils.toDouble(goldRateTxtField.getValue()) : 0.0;
 				if((quantity > 0)
 						&& (weight > 0.0)
-						&& (makingCharge > 0.0)
+						&& (makingCharge >= 0.0)
 						&& (goldRate > 0.0)
 						&& !StringUtils.isBlank(String.valueOf(piecePairField.getValue()))
 						&& !StringUtils.isBlank(String.valueOf(makingChargeType.getValue()))){

@@ -223,8 +223,23 @@
     	text-align: center;
     }
     
-    .gold-table-row .v-table-cell-wrapper {
-    	max-height: 22px;
+    .silver-table-header .v-table-header{
+		color: #0B0B61;
+    	background: #C0C0C0;
+    	text-align: center;
+	}
+    .silver-table-footer .v-table-footer{
+		color: #0B0B61;
+    	background: #C0C0C0;
+    	text-align: center;
+	}
+	.silver-table-footer-container .v-table-footer-container{
+		color: #0B0B61;
+    	text-align: center;
+    }
+    
+    .billing-table-row .v-table-cell-wrapper {
+    	max-height: 21px;
     }
 
 }

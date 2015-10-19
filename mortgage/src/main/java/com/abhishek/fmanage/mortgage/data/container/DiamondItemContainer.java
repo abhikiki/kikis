@@ -1,17 +1,21 @@
 package com.abhishek.fmanage.mortgage.data.container;
 
+import java.util.List;
+
 import org.apache.commons.lang.math.NumberUtils;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.UserError;
+import com.vaadin.data.validator.DoubleRangeValidator;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.TextField;
 
-public class DiamondItemContainer extends IndexedContainer{
+public class DiamondItemContainer extends IndexedContainer implements CustomItemContainerInterface{
 
 	private static final long serialVersionUID = 1L;
+	public static final String DELETE = "Delete";
 	public static final String ITEM_NAME = "ItemName";
 	public static final String QUANTITY = "Quantity";
 	public static final String PIECE_PAIR = "PiecePair";
@@ -19,12 +23,10 @@ public class DiamondItemContainer extends IndexedContainer{
 	public static final String DIAMOND_WEIGHT = "Diamond Wt(gms)";
 	public static final String DIAMOND_PIECE = "No. Of Diamond Piece";
 	public static final String CERTIFICATE = "Certificate";
-	public static final String PRICE = "Net Price";
+	public static final String PRICE = "Price(INR)";
 	
-	
-	
-
 	public DiamondItemContainer(){
+		 addContainerProperty(DELETE, Image.class, new Image());
 	     addContainerProperty(ITEM_NAME, ComboBox.class, new ComboBox());
 	     addContainerProperty(QUANTITY, TextField.class, new TextField());
 	     addContainerProperty(PIECE_PAIR, ComboBox.class, new ComboBox());
@@ -35,13 +37,34 @@ public class DiamondItemContainer extends IndexedContainer{
 	     addContainerProperty(PRICE, TextField.class, new TextField());
 	}
 	
+	public Double getTotal(){
+		 double totalCost= 0.0;
+		 List<Object> itemIdsList = getAllItemIds();
+	        for (Object obj: itemIdsList){
+	        	TextField goldPriceTxtField = (TextField)getItem(obj).getItemProperty(PRICE).getValue();
+	        	String itemPrice = goldPriceTxtField.getValue();
+	        	totalCost += NumberUtils.isNumber(itemPrice) ? NumberUtils.toDouble(itemPrice) : 0.0;
+	        }
+	        return totalCost;
+	    }
+	
 	@SuppressWarnings("unchecked")
-    public void addDiamondItem()
+    public void addCustomItem()
     {
         Object diamondItemRowId = addItem();
+        ThemeResource resource = new ThemeResource("img/removeButtonSmall.jpg");
+        // Use the resource
+           final Image image = new Image("", resource);
+           image.setHeight("20px");
+           image.setWidth("20px");
+           image.setDescription("Remove Item");
+           image.setData(diamondItemRowId);
+           image.addClickListener((event -> removeItem(image.getData())));
+
         Item item = getItem(diamondItemRowId);
         if (item != null)
         {
+        	item.getItemProperty(DELETE).setValue(image);
         	item.getItemProperty(ITEM_NAME).setValue(getItemNameList());
         	item.getItemProperty(QUANTITY).setValue(getQuantity(diamondItemRowId));
         	item.getItemProperty(PIECE_PAIR).setValue(getPiecePair());
@@ -66,22 +89,16 @@ public class DiamondItemContainer extends IndexedContainer{
 		itemPrice.setImmediate(true);
 		itemPrice.setRequired(true);
 		itemPrice.setValidationVisible(true);
-		itemPrice.addValidator(new Validator() {
+		itemPrice.addValidator(new DoubleRangeValidator("Must be number and > 0",  0.1, null));
+		itemPrice.addValidator(
+			(value) -> {
+							if(!NumberUtils.isNumber(String.valueOf(value)) 
+									|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
+								itemPrice.addStyleName("v-textfield-fail");
+							}else{
+								itemPrice.removeStyleName("v-textfield-fail");
+							}});
 		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
-				if(!NumberUtils.isNumber(String.valueOf(value)) 
-						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					itemPrice.setComponentError(new UserError("Must be number and > 0"));
-					itemPrice.addStyleName("v-textfield-fail");
-				}else{
-					itemPrice.setComponentError(null);
-					itemPrice.removeStyleName("v-textfield-fail");
-				}
-			}
-		});
 		return itemPrice;
 
 	}
@@ -91,23 +108,17 @@ public class DiamondItemContainer extends IndexedContainer{
 		weight.setImmediate(true);
 		weight.setRequired(true);
 		weight.setValidationVisible(true);
-		weight.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
+		weight.addValidator(new DoubleRangeValidator("Must be number and > 0", 0.1, null));
+		weight.addValidator(
+			(value) -> {
 				if(!NumberUtils.isNumber(String.valueOf(value)) 
 						|| ( NumberUtils.isNumber(String.valueOf(value)) && (NumberUtils.toDouble(String.valueOf(value)) <= 0.0))){
-					weight.setComponentError(new UserError("Must be number and > 0"));
 					weight.addStyleName("v-textfield-fail");
-					
 				}else{
 					weight.setComponentError(null);
 					weight.removeStyleName("v-textfield-fail");
 				}
-			}
-		});
+		});		
 		return weight;
 	}
 
@@ -116,6 +127,7 @@ public class DiamondItemContainer extends IndexedContainer{
 		itemName.addItem("Piece");
 		itemName.addItem("Pair");
 		itemName.setValue("Piece");
+		itemName.setWidth("100%");
 		return itemName;
 	}
 
@@ -124,22 +136,18 @@ public class DiamondItemContainer extends IndexedContainer{
 		quantity.setImmediate(true);
 		quantity.setRequired(true);
 		quantity.setValidationVisible(true);
-		quantity.addValidator(new Validator() {
-		
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void validate(Object value) throws InvalidValueException {
+		quantity.addValidator(new DoubleRangeValidator("Must be number and > 0", 0.1, null));
+		quantity.addValidator((value) ->
+			{
 				if(!NumberUtils.isDigits(String.valueOf(value)) 
-						|| ( NumberUtils.isDigits(String.valueOf(value)) && (NumberUtils.toInt(String.valueOf(value)) <= 0))){
-					quantity.setComponentError(new UserError("Must be number and > 0"));
-					quantity.addStyleName("v-textfield-fail");
+				|| ( NumberUtils.isDigits(String.valueOf(value))
+				&& (NumberUtils.toInt(String.valueOf(value)) <= 0))){
+				quantity.addStyleName("v-textfield-fail");
 				}else{
 					quantity.setComponentError(null);
 					quantity.removeStyleName("v-textfield-fail");
 				}
-			}
-		});
+			});
 		return quantity;
 	}
 	
@@ -148,6 +156,7 @@ public class DiamondItemContainer extends IndexedContainer{
 		itemName.addItem("Chain");
 		itemName.addItem("Necklace");
 		itemName.setValue("Chain");
+		itemName.setWidth("100%");
 		return itemName;
 	}
 }

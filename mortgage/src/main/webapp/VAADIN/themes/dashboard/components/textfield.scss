@@ -27,7 +27,11 @@
 	.v-textfield-success{
 		background: #C8F5DC;
 	}
-	
+
+	.my-disabled{
+		opacity: 1;
+		filter: none;
+	}	
 	
 	input.v-widget.v-textfield,
 	.v-filterselect {

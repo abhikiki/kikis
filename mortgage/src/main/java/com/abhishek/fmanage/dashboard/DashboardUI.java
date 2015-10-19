@@ -78,7 +78,7 @@ public class DashboardUI extends UI {
     };
 
     private HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
-    private Navigator nav;
+    public Navigator nav;
     private HelpManager helpManager = new HelpManager();
 
     @Override
