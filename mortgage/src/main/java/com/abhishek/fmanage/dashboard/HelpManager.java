@@ -1,14 +1,16 @@
 package com.abhishek.fmanage.dashboard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 
-public class HelpManager {
+public class HelpManager implements Serializable{
 
-    private List<HelpOverlay> overlays = new ArrayList<HelpOverlay>();
+	private static final long serialVersionUID = 1L;
+	private List<HelpOverlay> overlays = new ArrayList<HelpOverlay>();
 
     public void closeAll() {
         for (HelpOverlay overlay : overlays) {
